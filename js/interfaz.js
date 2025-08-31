@@ -1,10 +1,6 @@
-// archivo: interfaz.js
-
-// Inicializamos el sistema
-const sistema = new Sistema();
-let clienteActivo = null;
-
-// ====== Funciones ======
+// =========================
+// INTERFAZ DEL SISTEMA
+// =========================
 
 // Registrar cliente
 function registrarCliente() {
@@ -23,13 +19,12 @@ function registrarCliente() {
     }
 }
 
-// Iniciar sesión
+// Login
 function iniciarSesion() {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
     const cliente = sistema.iniciarSesion(email, password);
-
     if (cliente) {
         clienteActivo = cliente;
         mostrarPanelCliente();
@@ -48,7 +43,7 @@ function crearCuenta() {
     document.getElementById("saldoInicial").value = "";
 }
 
-// Actualizar la lista de cuentas en el panel
+// Actualizar lista de cuentas
 function actualizarListaCuentas() {
     const lista = document.getElementById("listaCuentas");
     lista.innerHTML = "";
@@ -56,12 +51,12 @@ function actualizarListaCuentas() {
     clienteActivo.cuentas.forEach(cuenta => {
         const li = document.createElement("li");
         li.innerText = `Cuenta ${cuenta.idCuenta} - Saldo: ${cuenta.saldo}`;
-        
-        // Botones para depósito y retiro
+
         const btnDeposito = document.createElement("button");
         btnDeposito.innerText = "Depositar 100";
         btnDeposito.onclick = () => {
             cuenta.depositar(100);
+            sistema.guardarDatos();
             actualizarListaCuentas();
         };
 
@@ -70,6 +65,7 @@ function actualizarListaCuentas() {
         btnRetiro.onclick = () => {
             try {
                 cuenta.retirar(50);
+                sistema.guardarDatos();
                 actualizarListaCuentas();
             } catch (e) {
                 alert(e);
@@ -85,13 +81,13 @@ function actualizarListaCuentas() {
     });
 }
 
-// Mostrar panel de cliente después del login
+// Mostrar panel cliente
 function mostrarPanelCliente() {
     document.getElementById("panelCliente").style.display = "block";
     document.getElementById("bienvenida").innerText = `Cliente: ${clienteActivo.nombre} ${clienteActivo.apellido}`;
 }
 
-// Limpiar campos del registro
+// Limpiar campos registro
 function limpiarCamposRegistro() {
     document.getElementById("nombre").value = "";
     document.getElementById("apellido").value = "";
@@ -99,24 +95,8 @@ function limpiarCamposRegistro() {
     document.getElementById("email").value = "";
     document.getElementById("password").value = "";
 }
-// Depósito
-btnDeposito.onclick = () => {
-    cuenta.depositar(100);
-    sistema.guardarDatos();   // 🔄 guardar cambios
-    actualizarListaCuentas();
-};
 
-// Retiro
-btnRetiro.onclick = () => {
-    try {
-        cuenta.retirar(50);
-        sistema.guardarDatos();   // 🔄 guardar cambios
-        actualizarListaCuentas();
-    } catch (e) {
-        alert(e);
-    }
-};
-// ====== Asignar eventos a botones ======
+// Asignar eventos
 document.getElementById("btnRegistrar").addEventListener("click", registrarCliente);
 document.getElementById("btnLogin").addEventListener("click", iniciarSesion);
 document.getElementById("btnCrearCuenta").addEventListener("click", crearCuenta);
